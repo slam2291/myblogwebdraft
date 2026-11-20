@@ -407,6 +407,58 @@ async function renderArticle(root) {
   } catch (_) { /* 列表读不到就不显示 */ }
 }
 
+/* ========== 顶栏时辰钟：时辰 · 刻 · 节气 ========== */
+const ZHI = "子丑寅卯辰巳午未申酉戌亥";
+// 二十四节气（21 世纪通用公式：日 = [Y×0.2422 + C] − [闰年数]，Y 为年份后两位；个别年份会差一天，如 2026 年雨水算出 2/19，实为 2/18）
+const JIEQI = [
+  ["小寒", 1, 5.4055], ["大寒", 1, 20.12], ["立春", 2, 3.87], ["雨水", 2, 18.73],
+  ["惊蛰", 3, 5.63], ["春分", 3, 20.646], ["清明", 4, 4.81], ["谷雨", 4, 20.1],
+  ["立夏", 5, 5.52], ["小满", 5, 21.04], ["芒种", 6, 5.678], ["夏至", 6, 21.37],
+  ["小暑", 7, 7.108], ["大暑", 7, 22.83], ["立秋", 8, 7.5], ["处暑", 8, 23.13],
+  ["白露", 9, 7.646], ["秋分", 9, 23.042], ["寒露", 10, 8.318], ["霜降", 10, 23.438],
+  ["立冬", 11, 7.438], ["小雪", 11, 22.36], ["大雪", 12, 7.18], ["冬至", 12, 21.94],
+];
+function jieqiDates(year) {
+  const y = year % 100;
+  return JIEQI.map(([name, month, c]) => {
+    const leap = month <= 2 ? Math.floor((y - 1) / 4) : Math.floor(y / 4);   // 一、二月的节气用上一年算闰年数
+    return { name, date: new Date(year, month - 1, Math.floor(y * 0.2422 + c) - leap) };
+  });
+}
+function currentJieqi(now) {
+  const list = [...jieqiDates(now.getFullYear() - 1), ...jieqiDates(now.getFullYear()), ...jieqiDates(now.getFullYear() + 1)];
+  const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+  let i = list.findIndex((t) => t.date > today) - 1;
+  const cur = list[i], next = list[i + 1];
+  return { name: cur.name, next: next.name, daysToNext: Math.round((next.date - today) / 86400000) };
+}
+// 时辰：23–1 点为子时……；刻：一个时辰八刻，每刻十五分钟（「午时三刻」= 11:45）
+function shichen(now) {
+  const h = now.getHours(), m = now.getMinutes();
+  const idx = Math.floor(((h + 1) % 24) / 2);
+  const into = ((h + 1) % 2) * 60 + m;                 // 进入这个时辰多少分钟
+  const ke = Math.floor(into / 15);
+  return { idx, name: ZHI[idx] + "时", ke: ke === 0 ? "初" : cnNumber(ke) + "刻" };
+}
+function startShichenClock(el) {
+  const text = el.querySelector(".sc-text");
+  const hand = el.querySelector(".sc-hand");
+  const tick = () => {
+    const now = new Date();
+    const s = shichen(now), j = currentJieqi(now);
+    const iso = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, "0")}-${String(now.getDate()).padStart(2, "0")}`;
+    const hm = `${String(now.getHours()).padStart(2, "0")}:${String(now.getMinutes()).padStart(2, "0")}`;
+    text.innerHTML = `<b>${s.name}${s.ke}</b><span class="sc-jq"> · ${j.name}</span>`;
+    el.title = `${cnDate(iso)} ${hm} · ${s.name}${s.ke} · ${j.name}（距${j.next}还有${cnNumber(j.daysToNext)}日）`;
+    el.setAttribute("aria-label", el.title);
+    // 日晷指针：子时朝下（正北在下），按分钟平滑转动
+    const minutes = ((now.getHours() + 1) % 24) * 60 + now.getMinutes();
+    hand.setAttribute("transform", `rotate(${180 + (minutes / 1440) * 360})`);
+  };
+  tick();
+  setInterval(tick, 30000);
+}
+
 /* ========== 启动 ========== */
 document.querySelectorAll("[data-site]").forEach((el) => {
   const key = el.dataset.site;
@@ -415,6 +467,8 @@ document.querySelectorAll("[data-site]").forEach((el) => {
 });
 if (document.title === "旁注") document.title = SITE.name;
 
+const clockEl = document.getElementById("shichen");
+if (clockEl) startShichenClock(clockEl);
 if (document.getElementById("featured")) renderHome();
 const articleRoot = document.getElementById("article");
 if (articleRoot) renderArticle(articleRoot);

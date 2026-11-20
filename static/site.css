@@ -131,6 +131,18 @@ img { max-width: 100%; }
 }
 .brand:hover .seal { transform: rotate(-12deg) scale(1.08); }
 .brand-name { font: 400 21px/1 var(--kai); letter-spacing: .2em; }
+/* 顶栏时辰钟 */
+.shichen {
+  display: inline-flex; align-items: center; gap: 8px; margin-right: auto; margin-left: 18px; padding: 4px 12px 4px 8px;
+  border-left: 1px solid var(--line); font: 400 15px/1 var(--kai); color: var(--ink-2); letter-spacing: .08em; white-space: nowrap;
+}
+.shichen b { font-weight: 400; color: var(--ink); }
+.sc-jq { color: var(--accent); }
+.sc-dial { width: 20px; height: 20px; flex: none; }
+.sc-dial circle:first-child { fill: none; stroke: var(--ink-3); stroke-width: 1.1; }
+.sc-ticks { stroke: var(--ink-3); stroke-width: 1.1; }
+.sc-hand { stroke: var(--accent); stroke-width: 1.8; stroke-linecap: round; transition: transform .6s var(--ease-out); }
+.sc-pin { fill: var(--ink); }
 .nav { display: flex; align-items: center; gap: 4px; }
 .nav a { position: relative; padding: 7px 16px; font: 400 16px/1.4 var(--kai); letter-spacing: .1em; color: var(--ink-2); transition: color .25s; }
 .nav a::after {
@@ -525,6 +537,9 @@ img { max-width: 100%; }
 @media (max-width: 560px) {
   .topbar-inner { padding: 6px 6px 6px 8px; }
   .nav a { padding: 6px 10px; }
+  .shichen { margin-left: 4px; padding: 4px 6px; border-left: 0; font-size: 14px; }
+  .sc-jq { display: none; }
+  .brand-name { display: none; }
   .hero-stats { display: grid; grid-template-columns: repeat(2, max-content); gap: 18px 44px; }
   .hero-stats dd { font-size: 24px; }
   .article-title-row { grid-template-columns: 1fr; margin: -30px 12px 0; }
