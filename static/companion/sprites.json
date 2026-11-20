@@ -1,0 +1,124 @@
+{
+  "cell": 256,
+  "source": 512,
+  "actions": {
+    "walk": {
+      "row": 0,
+      "frames": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7
+      ],
+      "ms": 130,
+      "loop": true
+    },
+    "idle": {
+      "row": 1,
+      "frames": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7
+      ],
+      "ms": 140,
+      "loop": true
+    },
+    "wave": {
+      "row": 2,
+      "frames": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9
+      ],
+      "ms": 95,
+      "loop": false
+    },
+    "spin": {
+      "row": 3,
+      "frames": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9
+      ],
+      "ms": 75,
+      "loop": false
+    },
+    "held": {
+      "row": 4,
+      "frames": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5
+      ],
+      "ms": 85,
+      "loop": true
+    },
+    "fall": {
+      "row": 5,
+      "frames": [
+        0
+      ],
+      "ms": 100,
+      "loop": true
+    },
+    "land": {
+      "row": 6,
+      "frames": [
+        0,
+        1,
+        2,
+        3,
+        4
+      ],
+      "ms": 85,
+      "loop": false
+    },
+    "bow": {
+      "row": 7,
+      "frames": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11
+      ],
+      "ms": 105,
+      "loop": false
+    }
+  },
+  "columns": 12,
+  "rows": 8
+}

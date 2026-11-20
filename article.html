@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>旁注</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='4' fill='%23a8321f'/%3E%3Ctext x='16' y='24' font-size='21' text-anchor='middle' fill='white' font-family='KaiTi,STKaiti,serif'%3E旁%3C/text%3E%3C/svg%3E">
+  <script>try { var d = document.documentElement, t = localStorage.getItem("theme"); if (t) d.dataset.pzTheme = t; if (sessionStorage.getItem("wipe") && !matchMedia("(prefers-reduced-motion: reduce)").matches) d.classList.add("wipe-in"); sessionStorage.removeItem("wipe"); } catch (e) {}</script>
+  <link rel="stylesheet" href="static/site.css">
+</head>
+<body>
+  <div class="backdrop" aria-hidden="true"><i class="mist m1"></i><i class="mist m2"></i><i class="mist m3"></i><div class="landscape"></div></div>
+  <div class="progress" aria-hidden="true"></div>
+
+  <header class="topbar">
+    <div class="topbar-inner">
+      <a class="brand" href="./"><span class="seal" data-site="mark">旁</span><span class="brand-name" data-site="name">旁注</span></a>
+      <nav class="nav">
+        <a href="./">文章</a>
+        <a href="article.html?p=about" data-nav="about">关于</a>
+        <button class="theme-toggle" type="button" aria-label="切换昼夜">
+          <svg viewBox="-12 -12 24 24" aria-hidden="true"><circle r="11" fill="var(--surface)" stroke="var(--ink)" stroke-width="1.2"/><path d="M0-11a11 11 0 0 1 0 22a5.5 5.5 0 0 1 0-11a5.5 5.5 0 0 0 0-11z" fill="var(--ink)"/><circle cy="-5.5" r="1.8" fill="var(--ink)"/><circle cy="5.5" r="1.8" fill="var(--surface)"/></svg>
+        </button>
+      </nav>
+    </div>
+  </header>
+
+  <main class="container">
+    <a class="back" href="./"><span>←</span> 回到篇目</a>
+    <!-- 文章内容由 static/site.js 读取 content/文件名.md 后渲染 -->
+    <article id="article" aria-live="polite"><div class="skeleton" style="margin-top:30px"></div></article>
+  </main>
+
+  <footer class="footer container">
+    <span class="motto"><span class="day">天行健，君子以自强不息</span><span class="night">地势坤，君子以厚德载物</span></span>
+    <span>© <span data-site="year"></span> <span data-site="name">旁注</span> · <button class="text-button" type="button" data-companion-toggle>收起小伙伴</button></span>
+  </footer>
+
+  <button class="to-top" type="button" aria-label="回到顶部">
+    <svg viewBox="0 0 48 48" aria-hidden="true"><circle cx="24" cy="24" r="22" pathLength="1"/></svg>上
+  </button>
+
+  <script src="static/site.js"></script>
+  <script src="static/fx.js"></script>
+  <script src="static/companion.js"></script>
+</body>
+</html>

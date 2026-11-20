@@ -1,0 +1,88 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>旁注</title>
+  <meta name="description" content="写在页边的字。">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='4' fill='%23a8321f'/%3E%3Ctext x='16' y='24' font-size='21' text-anchor='middle' fill='white' font-family='KaiTi,STKaiti,serif'%3E旁%3C/text%3E%3C/svg%3E">
+  <script>try { var d = document.documentElement, t = localStorage.getItem("theme"); if (t) d.dataset.pzTheme = t; if (sessionStorage.getItem("wipe") && !matchMedia("(prefers-reduced-motion: reduce)").matches) d.classList.add("wipe-in"); sessionStorage.removeItem("wipe"); } catch (e) {}</script>
+  <link rel="stylesheet" href="static/site.css">
+</head>
+<body>
+  <div class="backdrop" aria-hidden="true"><i class="mist m1"></i><i class="mist m2"></i><i class="mist m3"></i><div class="landscape"></div></div>
+
+  <header class="topbar">
+    <div class="topbar-inner">
+      <a class="brand" href="./"><span class="seal" data-site="mark">旁</span><span class="brand-name" data-site="name">旁注</span></a>
+      <nav class="nav">
+        <a href="./" aria-current="page">文章</a>
+        <a href="article.html?p=about">关于</a>
+        <button class="theme-toggle" type="button" aria-label="切换昼夜">
+          <svg viewBox="-12 -12 24 24" aria-hidden="true"><circle r="11" fill="var(--surface)" stroke="var(--ink)" stroke-width="1.2"/><path d="M0-11a11 11 0 0 1 0 22a5.5 5.5 0 0 1 0-11a5.5 5.5 0 0 0 0-11z" fill="var(--ink)"/><circle cy="-5.5" r="1.8" fill="var(--ink)"/><circle cy="5.5" r="1.8" fill="var(--surface)"/></svg>
+        </button>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <section class="hero container">
+      <div class="hero-text">
+        <p class="eyebrow" data-reveal>个人手记 · 笔墨之间</p>
+        <h1 class="hero-title" data-reveal style="--i:1"><span data-site="name">旁注</span></h1>
+        <p class="hero-tagline" data-reveal style="--i:2" data-site="tagline">写在页边的字。</p>
+        <div class="hero-actions" data-reveal style="--i:3">
+          <a class="btn btn-primary" href="#posts" data-magnetic>展卷而读 <span>↓</span></a>
+          <a class="btn btn-ghost" href="article.html?p=about" data-magnetic>关于此间 <span>→</span></a>
+        </div>
+        <dl class="hero-stats" data-reveal style="--i:4">
+          <div><dt>篇文章</dt><dd id="stat-posts">–</dd></div>
+          <div><dt>个标签</dt><dd id="stat-tags">–</dd></div>
+          <div><dt>最近落笔</dt><dd id="stat-updated">–</dd></div>
+          <div><dt>岁次</dt><dd id="stat-year">–</dd></div>
+        </dl>
+      </div>
+
+      <div class="hero-art">
+        <!-- 太极 + 先天八卦（八卦由 site.js 按卦象生成） -->
+        <svg class="bagua" viewBox="0 0 400 400" aria-hidden="true">
+          <g class="bagua-ring fade" id="bagua-ring"></g>
+          <g class="taiji" id="taiji">
+            <circle class="yang" cx="200" cy="200" r="92"/>
+            <path class="yin" d="M200 108 A92 92 0 0 1 200 292 A46 46 0 0 1 200 200 A46 46 0 0 0 200 108 Z"/>
+            <circle class="yin" cx="200" cy="154" r="13"/>
+            <circle class="yang" cx="200" cy="246" r="13"/>
+            <circle class="edge bagua-draw" cx="200" cy="200" r="92" pathLength="1"/>
+          </g>
+        </svg>
+        <div class="hero-vertical" aria-hidden="true">写在页边的字</div>
+        <button class="stamp" type="button" aria-label="再盖一次章">旁注</button>
+      </div>
+    </section>
+
+    <section class="container" id="posts">
+      <div class="section-head" data-reveal><h2>新篇</h2></div>
+      <div id="featured"><div class="skeleton"></div></div>
+
+      <div class="section-head" data-reveal>
+        <h2>篇目</h2>
+        <div class="filters" id="filters" role="toolbar" aria-label="按标签筛选"></div>
+      </div>
+      <div class="grid" id="grid"></div>
+    </section>
+  </main>
+
+  <footer class="footer container">
+    <span class="motto"><span class="day">天行健，君子以自强不息</span><span class="night">地势坤，君子以厚德载物</span></span>
+    <span>© <span data-site="year"></span> <span data-site="name">旁注</span> · <button class="text-button" type="button" data-companion-toggle>收起小伙伴</button></span>
+  </footer>
+
+  <button class="to-top" type="button" aria-label="回到顶部">
+    <svg viewBox="0 0 48 48" aria-hidden="true"><circle cx="24" cy="24" r="22" pathLength="1"/></svg>上
+  </button>
+
+  <script src="static/site.js"></script>
+  <script src="static/fx.js"></script>
+  <script src="static/companion.js"></script>
+</body>
+</html>
