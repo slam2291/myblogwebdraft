@@ -201,16 +201,14 @@ img { max-width: 100%; }
 .bagua { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; }
 .bagua-ring { transform-origin: 200px 200px; animation: turn 160s linear infinite reverse; }
 .bagua-ring .yao { fill: var(--ink); }
-.bagua-ring text { fill: var(--ink-2); font: 400 17px var(--kai); }
+.bagua-ring text { fill: var(--ink-2); font: 400 24px var(--kai); }
 .bagua-ring .rim { fill: none; stroke: var(--ink-3); stroke-width: 1; opacity: .5; }
 .bagua-ring .rim.dash { stroke-dasharray: 2 5; }
 .taiji { transform-origin: 200px 200px; animation: turn 40s linear infinite; cursor: pointer; }
-.taiji.spin { animation: turn 40s linear infinite, whirl 1.2s var(--ease-out); }
 .taiji .yin { fill: var(--ink); }
 .taiji .yang { fill: var(--surface); }
 .taiji .edge { fill: none; stroke: var(--ink); stroke-width: 2; }
 @keyframes turn { to { transform: rotate(360deg); } }
-@keyframes whirl { from { scale: 1; } 30% { scale: .9; } to { scale: 1; } }
 .bagua-draw { stroke-dasharray: 1; stroke-dashoffset: 1; animation: draw 2s .2s var(--ease-out) forwards; }
 @keyframes draw { to { stroke-dashoffset: 0; } }
 .hero-art .fade { opacity: 0; animation: fade-in 1.4s .6s forwards; }
@@ -315,11 +313,19 @@ img { max-width: 100%; }
 .featured .card-title { font: 700 clamp(25px, 3vw, 34px)/1.35 var(--serif); margin: 12px 0 12px; }
 .featured .card-summary { font-size: 16px; }
 .badge { align-self: flex-start; padding: 4px 10px 3px; border-radius: 2px; background: var(--accent); color: #fff; font: 400 14px/1.3 var(--kai); letter-spacing: .3em; }
+.cover-title {
+  position: absolute; top: 26px; right: 30px; z-index: 2; writing-mode: vertical-rl;
+  font: 400 clamp(20px, 2.2vw, 28px)/1.5 var(--kai); letter-spacing: .18em; color: var(--ink); opacity: .82;
+  max-height: calc(100% - 52px); overflow: hidden;
+  transition: transform .8s var(--ease-out), opacity .4s;
+}
+.card:hover .cover-title { transform: translateY(6px); opacity: 1; }
 .gua-line { display: flex; align-items: center; gap: 12px; margin-top: 18px; padding-top: 16px; border-top: 1px dashed var(--line); color: var(--ink-3); font: 400 15px/1.5 var(--kai); }
 .gua-line .gua { width: 22px; height: 24px; }
 
 .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 26px; }
 .grid .card.is-hidden { display: none; }
+.grid:not(.filtering) .card.is-latest { display: none; }
 .empty { grid-column: 1 / -1; padding: 40px; text-align: center; color: var(--ink-3); border: 1px dashed var(--line); border-radius: var(--radius); font-family: var(--kai); }
 
 .notice { padding: 20px 24px; border-radius: var(--radius); border: 1px dashed var(--line); background: var(--surface); color: var(--ink-2); font-size: 15px; }
@@ -347,7 +353,8 @@ img { max-width: 100%; }
 .gua-card strong { font: 400 26px/1 var(--kai); color: var(--accent); }
 .gua-card small { font: 400 12.5px/1 var(--kai); color: var(--ink-3); letter-spacing: .1em; }
 .article-title-row h1 { margin: 34px 0 0; font: 700 clamp(28px, 4.4vw, 44px)/1.3 var(--serif); letter-spacing: .03em; }
-.article-title-row .meta { margin-top: 10px; }
+.article-title-row .meta { margin-top: 12px; }
+.lead { margin: 10px 0 0; max-width: 34em; font: 400 18.5px/1.8 var(--kai); color: var(--ink-2); }
 .plain-head { margin: 40px 0 10px; padding-bottom: 24px; border-bottom: 1px solid var(--line); }
 .plain-head h1 { margin: 0; font: 400 clamp(36px, 6vw, 56px)/1.3 var(--kai); letter-spacing: .2em; }
 
@@ -430,9 +437,15 @@ img { max-width: 100%; }
 .progress { position: fixed; inset: 0 0 auto 0; height: 3px; z-index: 40; transform-origin: left; transform: scaleX(0); background: linear-gradient(90deg, transparent, var(--accent) 12%, var(--accent)); }
 
 /* ================= 页脚 / 回到顶部 ================= */
-.footer { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 12px; margin-top: 110px; padding: 28px 0 170px; position: relative; font-size: 13.5px; color: var(--ink-3); }
+.footer {
+  display: flex; flex-direction: column; align-items: center; gap: 14px; text-align: center;
+  margin-top: 120px; padding: 42px 0 190px; position: relative; font-size: 13.5px; color: var(--ink-3);
+  background: radial-gradient(60% 70% at 50% 30%, color-mix(in srgb, var(--bg) 88%, transparent), transparent 75%);
+}
+.footer .seal { width: 40px; height: 40px; font-size: 22px; transform: rotate(-6deg); }
+.footer-line { display: flex; flex-wrap: wrap; justify-content: center; align-items: center; gap: 8px 14px; }
 .footer::before { content: ""; position: absolute; left: 0; right: 0; top: 0; height: 12px; background: var(--fret) repeat-x left center / auto 12px; opacity: .5; }
-.motto { font: 400 17px/1.6 var(--kai); letter-spacing: .25em; color: var(--ink-2); }
+.motto { font: 400 20px/1.6 var(--kai); letter-spacing: .3em; color: var(--ink); }
 .motto .night { display: none; }
 :root[data-pz-theme="dark"] .motto .day { display: none; }
 :root[data-pz-theme="dark"] .motto .night { display: inline; }

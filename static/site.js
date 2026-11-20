@@ -66,7 +66,8 @@ function hash(str) {
 }
 // 每篇文章一卦：信息区写了「gua: 卦名」就用它，否则按文件名算出一卦
 function guaOf(post) {
-  return HEXAGRAMS.find((g) => g.name === post.gua) || castGua(post);
+  const set = HEXAGRAMS.find((g) => g.name === post.gua);
+  return set ? { ...set, how: "信息区指定" } : castGua(post);
 }
 
 // 梅花易数·年月日时起卦（以发布日期起卦）
@@ -78,7 +79,7 @@ function guaOf(post) {
 const XIANTIAN = ["坤", "乾", "兑", "离", "震", "巽", "坎", "艮"];   // 下标 = 余数（0 即 8 → 坤）
 function castGua(post) {
   const m = /^(\d{4})-(\d{1,2})-(\d{1,2})(?:[ T](\d{1,2}):\d{2})?/.exec(post.date || "");
-  if (!m) return HEXAGRAMS[hash(post.slug) % 64];        // 没有日期（如「关于」页）时才退回按文件名
+  if (!m) return { ...HEXAGRAMS[hash(post.slug) % 64], how: "按文件名" };   // 没有日期（如「关于」页）时才退回按文件名
   const year = +m[1], month = +m[2], day = +m[3];
   const branch = ((year - 4) % 12) + 1;                   // 子=1 … 亥=12
   const hourNum = m[4] !== undefined
@@ -86,7 +87,9 @@ function castGua(post) {
     : [...(post.title || "")].filter((c) => /\S/.test(c)).length;
   const base = branch + month + day;
   const upper = XIANTIAN[base % 8], lower = XIANTIAN[(base + hourNum) % 8];
-  return HEXAGRAMS.find((g) => g.upper === upper && g.lower === lower);
+  const g = HEXAGRAMS.find((x) => x.upper === upper && x.lower === lower);
+  const by = m[4] !== undefined ? "子丑寅卯辰巳午未申酉戌亥"[hourNum - 1] + "时" : `题${cnNumber(hourNum)}字`;
+  return { ...g, how: `${ganzhi(year)}年${cnNumber(month)}月${cnNumber(day)}日 · ${by} 起卦` };
 }
 // 画卦：六爻自下而上，阴爻是中间断开的两段
 function guaSvg(lines) {
@@ -249,14 +252,16 @@ const ready = () => document.dispatchEvent(new CustomEvent("content:ready"));
 function cardHtml(p, i, featured = false) {
   const g = guaOf(p);
   return `
-    <a class="card${featured ? " featured" : ""}" href="${postUrl(p)}" data-tilt data-cursor="展卷" data-reveal style="--i:${i % 6}" data-tags="${escapeHtml(p.tags.join("|"))}">
-      <div class="cover">${coverHtml(p)}${featured ? "" : `<span class="gua-badge" title="第${cnNumber(g.no)}卦 · ${g.name}">${guaSvg(g.lines)}${g.name}</span>`}</div>
+    <a class="card${featured ? " featured" : ""}${!featured && i === 0 ? " is-latest" : ""}" href="${postUrl(p)}" data-tilt data-cursor="展卷" data-reveal style="--i:${i % 6}" data-tags="${escapeHtml(p.tags.join("|"))}">
+      <div class="cover">${coverHtml(p)}${featured
+        ? `<span class="cover-title" aria-hidden="true">${escapeHtml(p.title)}</span>`
+        : `<span class="gua-badge" title="第${cnNumber(g.no)}卦 · ${g.name} · ${g.how}">${guaSvg(g.lines)}${g.name}</span>`}</div>
       <div class="card-body">
         ${featured ? `<span class="badge">新篇</span>` : ""}
         <h3 class="card-title"><span>${escapeHtml(p.title)}</span></h3>
         <div class="meta"><time datetime="${escapeHtml(p.date)}">${cnDate(p.date)}</time><i class="dot"></i><span>约${cnNumber(p.minutes)}分钟读完</span></div>
         ${p.summary ? `<p class="card-summary" style="margin-top:10px">${escapeHtml(p.summary)}</p>` : ""}
-        ${featured ? `<div class="gua-line">${guaSvg(g.lines)}<span>第${cnNumber(g.no)}卦 · ${g.name} · ${g.upper}上${g.lower}下</span></div>` : ""}
+        ${featured ? `<div class="gua-line" title="${g.how}">${guaSvg(g.lines)}<span>第${cnNumber(g.no)}卦 · ${g.name} · ${g.upper}上${g.lower}下</span></div>` : ""}
         <div class="card-foot"><div class="tags">${tagsHtml(p.tags)}</div><span class="read-more" aria-hidden="true">阅</span></div>
       </div>
     </a>`;
@@ -287,9 +292,10 @@ async function renderHome() {
       if (!chip) return;
       filters.querySelectorAll(".chip").forEach((c) => c.setAttribute("aria-pressed", c === chip));
       const tag = chip.dataset.tag;
+      grid.classList.toggle("filtering", Boolean(tag));   // 选了标签时，最新一篇也要出现在列表里
       let shown = 0;
       grid.querySelectorAll(".card").forEach((card, i) => {
-        const hit = !tag || card.dataset.tags.split("|").includes(tag);
+        const hit = tag ? card.dataset.tags.split("|").includes(tag) : !card.classList.contains("is-latest");
         card.classList.toggle("is-hidden", !hit);
         if (hit) {               // 重新播放入场动画
           card.classList.remove("in");
@@ -297,7 +303,7 @@ async function renderHome() {
           requestAnimationFrame(() => requestAnimationFrame(() => card.classList.add("in")));
         }
       });
-      grid.querySelector(".empty").hidden = shown > 0;
+      grid.querySelector(".empty").hidden = shown > 0 || !tag;
     });
   } catch (err) {
     featured.innerHTML = offlineNotice(err);
@@ -324,7 +330,7 @@ async function renderArticle(root) {
     return ready();
   }
   const { meta, body } = splitFrontMatter(text);
-  const post = { slug, title: meta.title || slug, date: meta.date || "", tags: meta.tags, cover: meta.cover || "", gua: meta.gua || "" };
+  const post = { slug, title: meta.title || slug, date: meta.date || "", summary: meta.summary || "", tags: meta.tags, cover: meta.cover || "", gua: meta.gua || "" };
   document.title = `${post.title} · ${SITE.name}`;
 
   const isPost = Boolean(post.date);
@@ -333,9 +339,10 @@ async function renderArticle(root) {
     ? `<header class="article-head" data-reveal>
          <div class="article-banner">${coverHtml(post)}</div>
          <div class="article-title-row">
-           <div class="gua-card" title="${g.upper}上${g.lower}下">${guaSvg(g.lines)}<strong>${g.name}</strong><small>第${cnNumber(g.no)}卦</small></div>
+           <div class="gua-card" title="${g.upper}上${g.lower}下 · ${g.how}">${guaSvg(g.lines)}<strong>${g.name}</strong><small>第${cnNumber(g.no)}卦</small></div>
            <div>
              <h1>${escapeHtml(post.title)}</h1>
+             ${post.summary ? `<p class="lead">${escapeHtml(post.summary)}</p>` : ""}
              <div class="meta"><time datetime="${escapeHtml(post.date)}">${cnDate(post.date)}</time><i class="dot"></i><span>约${cnNumber(readMinutes(body))}分钟读完</span>${post.tags.length ? `<span class="tags">${tagsHtml(post.tags)}</span>` : ""}</div>
            </div>
          </div>

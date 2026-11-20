@@ -264,16 +264,29 @@
     }
   });
 
-  /* ========== 太极：点一下转得更快 ========== */
+  /* ========== 太极：点一下推一把，带惯性慢慢停下，停在哪儿就留在哪儿 ========== */
+  // 用独立的 rotate 属性叠加在 CSS 的慢速自转上，所以不会打断自转，也不会弹回原位
   const taiji = document.getElementById("taiji");
-  if (taiji) taiji.addEventListener("click", (e) => {
-    taiji.classList.remove("spin");
-    void taiji.getBBox();
-    taiji.classList.add("spin");
-    const ring = document.getElementById("bagua-ring");
-    if (ring && ring.animate && !calm) ring.animate([{ rotate: "0deg" }, { rotate: "-90deg" }], { duration: 1400, easing: "cubic-bezier(.22,1,.36,1)", composite: "add" });
-    if (taiji.animate && !calm) taiji.animate([{ rotate: "0deg" }, { rotate: "360deg" }], { duration: 1400, easing: "cubic-bezier(.22,1,.36,1)", composite: "add" });
-  });
+  const ringEl = document.getElementById("bagua-ring");
+  if (taiji && !calm) {
+    let angle = 0, vel = 0, lastT = 0, spinning = false;
+    const PUSH = 540, MAX = 1800, FRICTION = 1.9;   // 每次点击加速（度/秒）、最高速度、摩擦
+    function spinStep(now) {
+      const dt = lastT ? Math.min((now - lastT) / 1000, 0.05) : 0.016;
+      lastT = now;
+      angle += vel * dt;
+      vel *= Math.exp(-FRICTION * dt);
+      taiji.style.rotate = `${angle % 360}deg`;
+      if (ringEl) ringEl.style.rotate = `${(-angle * 0.25) % 360}deg`;   // 八卦反向、慢一些
+      if (vel > 2) requestAnimationFrame(spinStep);
+      else { spinning = false; vel = 0; }
+    }
+    taiji.addEventListener("click", () => {
+      vel = Math.min(MAX, vel + PUSH);
+      if (taiji.animate) taiji.animate([{ scale: 1 }, { scale: 0.92 }, { scale: 1 }], { duration: 450, easing: "ease-out" });
+      if (!spinning) { spinning = true; lastT = 0; requestAnimationFrame(spinStep); }
+    });
+  }
 
   /* ========== 印章：点一下重新盖章 ========== */
   const stamp = document.querySelector(".stamp");
